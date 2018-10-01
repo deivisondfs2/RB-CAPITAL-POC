@@ -1,23 +1,16 @@
 <%@ include file="/init.jsp" %>
 
-<portlet:actionURL name="favoritoSubmit" var="favoritoSubmit" />
-
-
 <div class="row row-spacing">
 	<div class="col-md-12">
-		<h3 id="table-list">Operações</h3>
-
+		<h3 id="table-list">Favoritos</h3>
+		
+		<c:if test="${ShowGrid}">
 		<blockquote class="blockquote-sm blockquote-success">			
 		</blockquote>
-		
-		<form method="post" action="${favoritoSubmit}">
 
 		<table class="table table-autofit table-list">
 			<thead>
 				<tr>
-					<c:if test="${userIsLogged}">
-						<th>Favoritos</th>					
-					</c:if>
 					<th class="hidden-sm hidden-xs">CÓD. RB</th>
 					<th class="table-cell-content">
 						<span class="truncate-text" title="Description">CÓD CETIP</span>
@@ -33,16 +26,6 @@
 			<tbody>
 				<c:forEach items="${listPassivos}" var="passivo">
 					<tr>
-						<c:if test="${userIsLogged}">
-							<td>
-								<div class="checkbox">
-									<label>
-										<input type="checkbox" name="<portlet:namespace/>idsSelecionados" value="${passivo.idPassivo}">
-									</label>
-								</div>
-							
-							</td>
-						</c:if>					
 						<td class="hidden-sm hidden-xs">${passivo.codigoRB}</td>
 						<td class="hidden-sm hidden-xs">${passivo.codigoCetipBbb}</td>
 						<td class="table-cell-content">
@@ -57,10 +40,8 @@
 				</c:forEach>
 			</tbody>
 		</table>
-		<c:if test="${userIsLogged}">
-			<input type="submit" value="SUBMIT">
+		
 		</c:if>
-	</form>
 		
 	</div>
 </div>

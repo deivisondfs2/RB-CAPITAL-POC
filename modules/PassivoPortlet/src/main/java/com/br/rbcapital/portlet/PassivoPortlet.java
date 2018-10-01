@@ -6,8 +6,11 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.List;
 
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
 import javax.portlet.Portlet;
 import javax.portlet.PortletException;
 import javax.portlet.RenderRequest;
@@ -32,6 +35,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 /**
@@ -52,9 +56,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 )
 public class PassivoPortlet extends MVCPortlet {
 	
-	public static final String URL_PUBLIC = "https://gestaofiduciariaapi20180920073158.azurewebsites.net/api/operacoes/passivo/buscar?idsOperacoes=1,2,3&pagina=1&tamanhoPagina=10";
+	public static final String URL_PUBLIC = "https://gestaofiduciariaapi20180920073158.azurewebsites.net/api/operacoes/passivo/buscar?idsOperacoes=1,2,3,4,5,6,7,8,9,10&pagina=1&tamanhoPagina=10";
 
-	public static final String URL_PRIVADA = "https://gestaofiduciariaapi20180920073158.azurewebsites.net/api/operacoes/passivo/buscar?idsOperacoes=1,2&pagina=1&tamanhoPagina=10";
+	public static final String URL_PRIVADA = "https://gestaofiduciariaapi20180920073158.azurewebsites.net/api/operacoes/passivo/buscar?idsOperacoes=%s&pagina=1&tamanhoPagina=10";
 
 	public static final String LIST_PASSIVOS = "listPassivos";
 
@@ -66,6 +70,8 @@ public class PassivoPortlet extends MVCPortlet {
 			throws IOException, PortletException {
 		
 		try {
+			
+			String filtro = StringUtils.EMPTY;
 			
 			System.out.println("doView Passivo!!!");
 
@@ -81,35 +87,11 @@ public class PassivoPortlet extends MVCPortlet {
 			
 			System.out.println("\n USER: \n" + themeDisplay.getUserId());
 			
-			try {
-				System.out.println("***************TEST SERVICEE************ VALUESS----");
-				
-				System.out.println(String.valueOf(FavoritoLocalServiceUtil.getFavorito(1).getFavoritoId()));
-				
-				System.out.println(String.valueOf(FavoritoLocalServiceUtil.getFavorito(1).getUserId()));
-				
-				System.out.println(String.valueOf(FavoritoLocalServiceUtil.getFavorito(1).getFavoritoId()));
-				
-				testInsert();
-				
-				Favorito favorito = findByUserAttr(Long.valueOf(101), "userId");
-				
-				System.out.println(favorito.getFavoritoId());
-				System.out.println(favorito.getUserId());
-				System.out.println(favorito.getFavoritos_itenscol());
-				
-				
-			} catch (PortalException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			renderRequest.setAttribute("userIsLogged", userIsLogged);
 			
 			
-			if(!StringUtils.equals(palavraChave, PASSIVO_PUBLIC)) {
-				output = callURL(URL_PRIVADA);				
-			}else {
-				output = callURL(URL_PUBLIC);
-			}
+			output = callURL(URL_PUBLIC);
+			
 
 			System.out.println("\n Output: \n" + output);
 
@@ -130,6 +112,35 @@ public class PassivoPortlet extends MVCPortlet {
 		
 		super.doView(renderRequest, renderResponse);
 	}
+	
+	
+	public void favoritoSubmit(ActionRequest request, ActionResponse response) {
+		
+		
+		ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+		
+		boolean userIsLogged = themeDisplay.isSignedIn();
+		String idsSelecionados = StringUtils.EMPTY;
+		
+		if(userIsLogged) {
+			
+			idsSelecionados = Arrays.toString(ParamUtil.getParameterValues(request, "idsSelecionados")).replace("[", "").replace("]", "").replace(" ", "").trim();
+		
+			Favorito favorito = findByUserAttr(themeDisplay.getUserId(), "userId");
+			
+			if(ObjectUtils.notEqual(favorito, null)) {
+				testUpdate(idsSelecionados, favorito);
+			}else {
+				testInsert(idsSelecionados, themeDisplay.getUserId());
+			}
+			
+		}
+				
+
+		
+		System.out.println("IDSSSSS ------------" + idsSelecionados);
+	}
+	
 	
 	public static String callURL(String myURL) {
 		System.out.println("Requeted URL:" + myURL);
@@ -161,22 +172,33 @@ public class PassivoPortlet extends MVCPortlet {
 	}
 	
 	
-	private void testInsert()
+	private void testInsert(String idsSelecionados, Long userId)
 			throws SystemException {
 
 		long favoritoId = CounterLocalServiceUtil.increment(Favorito.class.getName());
 
 		Favorito favorito = _favoritoLocalService.createFavorito(favoritoId);
 
-		favorito.setUserId(4);
+		favorito.setUserId(userId);
 		
-		favorito.setFavoritos_itenscol("TESTeeeeeeee");
+		favorito.setFavoritos_itenscol(idsSelecionados);
 		
 		
-		System.out.println("FAVORITO[" + favorito + "]");
-		
+		System.out.println("FAVORITO ------- INSERTTTT[" + favorito + "]");
 
+		
 		FavoritoLocalServiceUtil.addFavorito(favorito);
+	}
+	
+	private void testUpdate(String idsSelecionados, Favorito favorito)
+			throws SystemException {
+			
+		favorito.setFavoritos_itenscol(idsSelecionados);
+				
+		System.out.println("FAVORITO ---------- UPDATEEEEE[" + favorito + "]");
+
+		
+		FavoritoLocalServiceUtil.updateFavorito(favorito);
 	}
 	
 	
