@@ -1,0 +1,9 @@
+Bundle-Name: favoritoservice-api
+Bundle-SymbolicName: com.favorito.api
+Bundle-Version: 1.0.0
+Export-Package:\
+	com.favorito.exception,\
+	com.favorito.model,\
+	com.favorito.service,\
+	com.favorito.service.persistence
+-includeresource: META-INF/service.xml=../favoritoservice-service/service.xml

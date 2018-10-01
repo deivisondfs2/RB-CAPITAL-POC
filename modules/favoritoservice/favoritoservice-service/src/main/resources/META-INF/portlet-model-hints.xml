@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="com.favorito.model.Favorito">
+		<field name="favoritoId" type="long" />
+		<field name="userId" type="long" />
+		<field name="favoritos_itenscol" type="String" />
+	</model>
+</model-hints>
