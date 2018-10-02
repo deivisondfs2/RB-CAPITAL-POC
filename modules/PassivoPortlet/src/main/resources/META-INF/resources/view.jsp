@@ -43,8 +43,8 @@
 							
 							</td>
 						</c:if>					
-						<td class="hidden-sm hidden-xs">${passivo.codigoRB}</td>
-						<td class="hidden-sm hidden-xs">${passivo.codigoCetipBbb}</td>
+						<td class="hidden-sm hidden-xs"><a href="passivodetalhe?passivo=${passivo.idPassivo}">${passivo.codigoRB}</a></td>
+						<td class="hidden-sm hidden-xs"><a href="passivodetalhe?passivo=${passivo.idPassivo}">${passivo.codigoCetipBbb}</a></td>
 						<td class="table-cell-content">
 							<span class="truncate-text" title="${passivo.apelidoOperacao}">${passivo.apelidoOperacao}</span>
 						</td>

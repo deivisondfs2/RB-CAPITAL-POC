@@ -1,0 +1,8 @@
+Bundle-Name: PassivoDetalhe
+Bundle-SymbolicName: com.br.rbcapital.detalhe
+Bundle-Version: 1.0.0
+Export-Package: com.br.rbcapital.detalhe.constants
+Include-Resource: @jackson-databind-2.9.3.jar,\
+	@jackson-annotations-2.9.3.jar,\
+	@jackson-core-2.9.3.jar,\
+	@commons-lang3-3.0.jar,\
